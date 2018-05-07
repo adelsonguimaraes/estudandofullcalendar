@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Estudando FullCalendar</title>
+	<meta charset='utf-8' />
+	<base href="./">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link href='libs/css/fullcalendar/fullcalendar.min.css' rel='stylesheet' />
+	<link href='libs/css/fullcalendar/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+	<script src='libs/js/moment.min.js'></script>
+	<script src='libs/js/jquery.min.js'></script>
+	<script src='libs/js/fullcalendar/fullcalendar.min.js'></script>
+	<script src='libs/js/fullcalendar/locale/pt-br.js'></script>
+
+	<!-- APP  -->
+	<script src='libs/js/app.js'></script>
+
+	<style type="text/css">
+		#calendar-container {
+		  position: fixed;
+		  top: 0;
+		  left: 0;
+		  right: 0;
+		  bottom: 0;
+		}
+		.fc-header-toolbar {
+		  /*
+		  the calendar will be butting up against the edges,
+		  but let's scoot in the header's buttons
+		  */
+		  padding-top: 1em;
+		  padding-left: 1em;
+		  padding-right: 1em;
+		}
+
+		.mod {
+			position: fixed;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			z-index: 1030;
+			background: url('http://bin.smwcentral.net/u/11361/BlackTransparentBackground.png');
+			display: none;
+		}
+		.mod-content {
+			margin: 0 auto;
+			margin-top: 30px;
+			max-width: 80%;
+			padding: 15px;
+			background: #fff;
+			-webkit-box-shadow: 10px 10px 5px -2px rgba(0,0,0,0.75);
+			-moz-box-shadow: 10px 10px 5px -2px rgba(0,0,0,0.75);
+			box-shadow: 10px 10px 5px -2px rgba(0,0,0,0.75);
+		}
+		.btn {
+			padding: 15px;
+			border-radius: 5px;
+		}
+		.success { 
+			background: rgb(56, 153, 66);
+			border: none;
+			color: #fff;
+			cursor: pointer;
+		}
+		.success:hover {
+			background: rgb(61, 170, 72);
+		}
+		.success:active {
+			outline: none;
+			border: none;
+		}
+		button:focus {
+			outline:0;
+		}
+		.danger {
+			background: #ca4942;
+			border: none;
+			color: #fff;
+			cursor: pointer;
+		}
+		.danger:hover {
+			background: #ff584f;
+		}
+	</style>
+</head>
+<body>
+	<div class="mod" id="modal">
+		<div class="mod-content">
+			<div id="dataevent"></div>
+			<div id="actions">
+				<button class="btn success">
+					Finalizar Tarefa
+				</button>
+				<button class="btn danger">
+					Informar Ocorrência
+				</button>
+			</div>
+		</div>
+	</div>
+	<div id="calendar-container">
+		<div id="calendar">	</div>
+	</div>
+</body>
+</html>
