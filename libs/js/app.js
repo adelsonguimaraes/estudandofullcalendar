@@ -1,5 +1,5 @@
 function getDefaultView() {
-	return (window.innerWidth < 514) ? "listWeek" : "month"; 
+	return (window.innerWidth < 514) ? "listMonth" : "month"; 
 }
 
 function myEvents () {
@@ -43,11 +43,12 @@ document.addEventListener("DOMContentLoaded", () => {
 		},
 		defaultView: getDefaultView(),
 		header: {
-	        left: 'prev,next today',
+			// left: 'prev,next today',
+			left: 'today',
 	        center: 'title',
 	        right: 'month,agendaWeek,agendaDay,listWeek'
     	},
-    	titleFormat: 'MMMM YYYY',
+    	titleFormat: 'DD MMMM YYYY',
     	height: 'parent',
 		events: myEvents(),
 		navLinks: true, // can click day/week names to navigate views
@@ -64,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			setDataEventModal(date.id);
 		}
 	});
+	dragCalendar();
 }, false);
 
 
@@ -97,7 +99,7 @@ function setDataEventModal (id) {
 		<p>
 			<b>Evento:</b> ${event.title}<br>
 			<b>Descrição:</b> ${event.descricao}<br>
-			<b>Data:</b> ${moment(event.start).format('DD-MM-YYYY')}<br>
+			<b>Data:</b> ${moment(event.start).format('DD MMMM YYYY')}<br>
 			<b>Equipe:</b> ${listaEquipe(event.equipe)}
 		<p>
 	`;
@@ -110,3 +112,100 @@ function setDataEventModal (id) {
 	});
 }
 
+function dragCalendar () {
+	let cal = document.getElementById('calendar');
+	cal = cal.children[1];
+	let clicked = false;
+	let position = 0;
+	let touch = false;
+	let brushes = []; // pinturas da tela
+	let timeini = null;
+
+	// keybord event
+	document.addEventListener("keyup", (e) => {
+		// esquerda
+		if (e.keyCode === 37) {
+			$('#calendar').fullCalendar('prev');
+		// direita
+		}else if (e.keyCode === 39) {
+			$('#calendar').fullCalendar('next');
+		}
+	});
+	// cal.addEventListener("mouseup", (e) => {
+	// 	if ( clicked && !touch ) {
+	// 		// moveu para esquerda
+	// 		if (e.clientX < position) {
+	// 			if ((position - e.clientX) > 200) $('#calendar').fullCalendar('next');
+	// 		// moveu para direita
+	// 		}else{
+	// 			if ((e.clientX - position) > 200) $('#calendar').fullCalendar('prev');
+	// 		}
+	// 	}
+	// 	clicked = false;
+	// 	position = 0;
+	// });
+	// cal.addEventListener("mousemove", (e) => {
+	// 	// se manter pressionado por mais de 1,5 segundos break
+	// 	if (clicked && !touch) {
+	// 		// if(moment().diff(timeini, "seconds", true) > 1) return false;
+	// 		let brush = document.createElement("span");
+	// 		brush.classList.add("dragPaint");
+	// 		brush.style.left = `${e.clientX}px`;
+	// 		brush.style.top = `${e.clientY}px`;
+	// 		brush.style.position = "absolute";
+	// 		brush.style.zIndex = 1300;
+	// 		if (brushes.length <=15) {
+	// 			brushes.push(brush);
+	// 			document.body.appendChild(brush);
+	// 		}
+	// 	}else{
+	// 		for (var i in brushes) {
+	// 			brushes[i].remove();
+	// 		}
+	// 		brushes = [];
+	// 	}
+	// });
+
+	//touch event
+	cal.addEventListener("touchstart", (e) => {
+		touch = true;
+		clicked = true;
+		position = e.changedTouches[0].clientX;
+		timeini = moment();
+	});
+	
+	cal.addEventListener("touchend", (e) => {
+		if ( clicked && touch ) {
+			// moveu para esquerda
+			if (e.changedTouches[0].clientX < position) {
+				if ((position - e.changedTouches[0].clientX) > 60) $('#calendar').fullCalendar('next');
+			// moveu para direita
+			}else{
+				if ((e.changedTouches[0].clientX - position) > 60) $('#calendar').fullCalendar('prev');
+			}
+		}
+		clicked = false;
+		position = 0;
+		for (var i in brushes) {
+			brushes[i].remove();
+		}
+		brushes = [];
+	});
+	
+	cal.addEventListener("touchmove", (e) => {
+		// se manter pressionado por mais de 1,5 segundos break
+		if(moment().diff(timeini, "seconds", true) > 1.5) return false;
+		if (clicked && touch) {
+			let brush = document.createElement("span");
+			brush.classList.add("dragPaint");
+			brush.style.left = `${e.changedTouches[0].clientX}px`;
+			brush.style.top = `${e.changedTouches[0].clientY}px`;
+			brush.style.position = "absolute";
+			brush.style.zIndex = 1300;
+			if (brushes.length <=15) {
+				brushes.push(brush);
+				document.body.appendChild(brush);
+			}
+		}
+	});
+}
