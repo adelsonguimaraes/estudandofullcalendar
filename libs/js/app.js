@@ -42,12 +42,16 @@ document.addEventListener("DOMContentLoaded", () => {
 			$('#calendar').fullCalendar("rerenderEvents");
 		},
 		defaultView: getDefaultView(),
-		header: {
+		header: false,
+		// {
 			// left: 'prev,next today',
-			left: 'today',
-	        center: 'title',
-	        right: 'month,agendaWeek,agendaDay,listWeek'
-    	},
+			// left: 'today',
+	        // center: 'title',
+			// right: 'month,agendaWeek,agendaDay,listWeek'
+			// left: '',
+	        // center: '',
+	        // right: ''
+    	// },
     	titleFormat: 'DD MMMM YYYY',
     	height: 'parent',
 		events: myEvents(),
@@ -65,9 +69,16 @@ document.addEventListener("DOMContentLoaded", () => {
 			setDataEventModal(date.id);
 		}
 	});
-	dragCalendar();
+	setTitle();
+	clickItemMenu();
+	setTimeout(() => {
+		dragCalendar();
+	}, 1500);
 }, false);
 
+function setTitle () {
+	document.getElementById('title').innerHTML = `<h2>${$('#calendar').fullCalendar('getView').title}</h2>`;
+}
 
 function getEvent (id) {
 	let events = myEvents();
@@ -114,7 +125,7 @@ function setDataEventModal (id) {
 
 function dragCalendar () {
 	let cal = document.getElementById('calendar');
-	cal = cal.children[1];
+	cal = cal.children[0];
 	let clicked = false;
 	let position = 0;
 	let touch = false;
@@ -126,45 +137,13 @@ function dragCalendar () {
 		// esquerda
 		if (e.keyCode === 37) {
 			$('#calendar').fullCalendar('prev');
+			setTitle();
 		// direita
 		}else if (e.keyCode === 39) {
 			$('#calendar').fullCalendar('next');
+			setTitle();
 		}
 	});
-	// cal.addEventListener("mouseup", (e) => {
-	// 	if ( clicked && !touch ) {
-	// 		// moveu para esquerda
-	// 		if (e.clientX < position) {
-	// 			if ((position - e.clientX) > 200) $('#calendar').fullCalendar('next');
-	// 		// moveu para direita
-	// 		}else{
-	// 			if ((e.clientX - position) > 200) $('#calendar').fullCalendar('prev');
-	// 		}
-	// 	}
-	// 	clicked = false;
-	// 	position = 0;
-	// });
-	// cal.addEventListener("mousemove", (e) => {
-	// 	// se manter pressionado por mais de 1,5 segundos break
-	// 	if (clicked && !touch) {
-	// 		// if(moment().diff(timeini, "seconds", true) > 1) return false;
-	// 		let brush = document.createElement("span");
-	// 		brush.classList.add("dragPaint");
-	// 		brush.style.left = `${e.clientX}px`;
-	// 		brush.style.top = `${e.clientY}px`;
-	// 		brush.style.position = "absolute";
-	// 		brush.style.zIndex = 1300;
-	// 		if (brushes.length <=15) {
-	// 			brushes.push(brush);
-	// 			document.body.appendChild(brush);
-	// 		}
-	// 	}else{
-	// 		for (var i in brushes) {
-	// 			brushes[i].remove();
-	// 		}
-	// 		brushes = [];
-	// 	}
-	// });
 
 	//touch event
 	cal.addEventListener("touchstart", (e) => {
@@ -179,9 +158,11 @@ function dragCalendar () {
 			// moveu para esquerda
 			if (e.changedTouches[0].clientX < position) {
 				if ((position - e.changedTouches[0].clientX) > 60) $('#calendar').fullCalendar('next');
+				setTitle();
 			// moveu para direita
 			}else{
 				if ((e.changedTouches[0].clientX - position) > 60) $('#calendar').fullCalendar('prev');
+				setTitle();
 			}
 		}
 		clicked = false;
@@ -209,3 +190,42 @@ function dragCalendar () {
 		}
 	});
 }
+
+function clickItemMenu () {
+	let = menu = document.getElementById('menuDrop');
+	menu.addEventListener("click", (e) => {
+		if (e.target.tagName === 'A') {
+			if (e.target.name === 'today') return $('#calendar').fullCalendar('gotoDate', moment());
+			$('#calendar').fullCalendar('changeView', e.target.name);
+			setTitle();
+		}
+	});
+}
+
+
+function filtering (data, field) {
+	return {
+		temp : [],
+		inputValue: '',
+		fil: function (val) {
+			let f = document.getElementById('filter');
+			let str = f.value.toUpperCase();
+			return val[field].toUpperCase().indexOf(str);
+		},
+		filter: function () {
+			this.temp = data;
+			return this.temp.filter(this.fil);
+		},
+		start: function () {
+			document.addEventListener('DOMContentLoaded', () => {
+				let f = document.getElementById('filter');
+				f.addEventListener('keyup', (e) => {
+					console.log(this.filter());
+					return this.filter();
+				});
+			})
+		}
+	}
+};
+$('#calendar').fullCalendar("removeEvents");
+$('#calendar').fullCalendar("renderEvents", filtering(myEvents(), 'title').start());
