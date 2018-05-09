@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			$('#calendar').fullCalendar("rerenderEvents");
 		},
 		defaultView: getDefaultView(),
+		nowIndicator: true,
 		header: false,
 		// {
 			// left: 'prev,next today',
@@ -202,30 +203,58 @@ function clickItemMenu () {
 	});
 }
 
+function especialCharMask (palavra){
+	var com_acento = 'áàãâäéèêëíìîïóòõôöúùûüçÁÀÃÂÄÉÈÊËÍÌÎÏÓÒÕÖÔÚÙÛÜÇ´`^¨~';  
+    var sem_acento = 'aaaaaeeeeiiiiooooouuuucAAAAAEEEEIIIIOOOOOUUUUC     ';
+    for (l in palavra){
+        for (l2 in com_acento){
+            if (palavra[l] == com_acento[l2]){
+                palavra=palavra.replace(palavra[l],sem_acento[l2]);
+    		}
+        }
+    }
+    return palavra;
+}
 
+// filtrando
 function filtering (data, field) {
 	return {
 		temp : [],
 		inputValue: '',
-		fil: function (val) {
+		fil: (val) => {
 			let f = document.getElementById('filter');
-			let str = f.value.toUpperCase();
-			return val[field].toUpperCase().indexOf(str);
+			let str = especialCharMask(f.value).toUpperCase();
+			return especialCharMask(val[field]).toUpperCase().indexOf(str)>=0;
 		},
 		filter: function () {
-			this.temp = data;
-			return this.temp.filter(this.fil);
+			let changes = [];
+			changes = data;
+			changes = changes.filter(this.fil);
+			this.temp.splice(0, this.temp.length);
+			for(var i in changes) {
+				this.temp.push(changes[i]);
+			}
+			return this.temp;
+		},
+		watch : function (callback) {
+			Array.observe(this.temp, callback);
 		},
 		start: function () {
 			document.addEventListener('DOMContentLoaded', () => {
 				let f = document.getElementById('filter');
 				f.addEventListener('keyup', (e) => {
-					console.log(this.filter());
 					return this.filter();
 				});
 			})
 		}
 	}
 };
-$('#calendar').fullCalendar("removeEvents");
-$('#calendar').fullCalendar("renderEvents", filtering(myEvents(), 'title').start());
+// criando instancia de filtering
+let fil = filtering(myEvents(), 'title');
+// startando
+fil.start();
+// escutando evento de filtro
+fil.watch( (changes) => {
+	$('#calendar').fullCalendar("removeEvents");
+	$('#calendar').fullCalendar("renderEvents", fil.temp);
+});
