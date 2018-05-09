@@ -74,6 +74,39 @@ function myEvents () {
 			equipe: [
 				"Fulano 1"
 			]
+		},
+		{
+			"id": 7,
+			"title": 'Testar conexão do cliente Panasonic',
+			"descricao": "A instalação da internet do cliente foi finalizada, agora é necessário testar a conexão do cliente.",
+			"start": '2018-05-18T14:00:00',
+			color: "rgb(34, 73, 137)",
+			// textColor: "rgb(0, 0, 0)"
+			equipe: [
+				"Fulano 1"
+			]
+		},
+		{
+			"id": 8,
+			"title": 'Enviar proposta comercial para cliente Bemol',
+			"descricao": "Enviar uma nova proposta para o cliente informando os novos valores para os serviços solicitados.",
+			"start": '2018-05-22T08:30:00',
+			color: "rgb(34, 73, 137)",
+			// textColor: "rgb(0, 0, 0)"
+			equipe: [
+				"Fulano 1"
+			]
+		},
+		{
+			"id": 9,
+			"title": 'Trocar lâmpadas do escritório',
+			"descricao": "Verificar e trocar lâmpadas queimadas do escritório da Akto.",
+			"start": '2018-05-23T15:00:00',
+			color: "rgb(34, 73, 137)",
+			// textColor: "rgb(0, 0, 0)"
+			equipe: [
+				"Fulano 1"
+			]
 		}
 	];
 	return events;
@@ -114,15 +147,27 @@ document.addEventListener("DOMContentLoaded", () => {
 			setDataEventModal(date.id);
 		}
 	});
-	setTitle();
-	clickItemMenu();
-	setTimeout(() => {
-		dragCalendar();
-	}, 1500);
+	setTitle(); // setando o titulo do calendário
+	clickItemMenu(); // cliando num item do menu
+	dragCalendar(); // arrastando o dedo na tela
+	prevOrNext(); // clicando nos botões de navegação Prev ou Next
 }, false);
 
 function setTitle () {
-	document.getElementById('title').innerHTML = `<h3>${$('#calendar').fullCalendar('getView').title}</h3>`;
+	document.getElementById('title').innerHTML = `${$('#calendar').fullCalendar('getView').title}`;
+}
+
+function prevOrNext () {
+	document.getElementById('prev').addEventListener("click", function (e) {
+		// move calendario para trás
+		$('#calendar').fullCalendar('prev');
+		setTitle(); // atualiza o título
+	});
+	document.getElementById('next').addEventListener("click", function (e) {
+		// move o calendário para frente
+		$('#calendar').fullCalendar('next');
+		setTitle(); // atualiza o título
+	});
 }
 
 function getEvent (id) {
@@ -246,6 +291,33 @@ function clickItemMenu () {
 		}
 	});
 }
+
+function goToDate (date) {
+	let view = $('#calendar').fullCalendar('getView');
+	$('#calendar').fullCalendar('changeView', view.name, date);
+	setTitle();
+}
+
+function clickTitle () {
+	document.addEventListener('DOMContentLoaded', () => {
+		let title = document.getElementById('title');
+		let datepicker = document.getElementById('datetimepicker');
+		document.addEventListener('click', function (e) {
+			if (e.target === title) {
+				datepicker.style.display = "block";	
+			}else{
+				datepicker.style.display = "none";
+			}
+		});
+		$(".form_datetime").datetimepicker()
+			.on('changeDate', function (ev) {
+				let date = moment(ev.date).format('YYYY-MM-DD');
+				goToDate(date);
+				datepicker.style.display = "none";
+			});
+	});
+}
+clickTitle();
 
 function especialCharMask (palavra){
 	var com_acento = 'áàãâäéèêëíìîïóòõôöúùûüçÁÀÃÂÄÉÈÊËÍÌÎÏÓÒÕÖÔÚÙÛÜÇ´`^¨~';  
