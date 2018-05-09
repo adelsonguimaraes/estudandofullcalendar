@@ -7,13 +7,17 @@ function myEvents () {
 		{
 			"id": 1,
 			"title": "Trocar roteador SEMP",
+			"descricao": "O Cliente informou a queima do aparelho, subistituir por um novo.",
 			"start": '2018-05-08T08:00:00',
-			color: "red"
+			color: "red",
+			equipe: [
+				"Fulano 3"
+			]
 		},
 		{
 			"id": 2,
 			"title": 'Reunião de Planejamento',
-			"descricao": "Reunião para re-planejar metodos de agilidade da Equipe de desenvolvimento",
+			"descricao": "Reunião para re-planejar metodos de agilidade da Equipe de desenvolvimento.",
 			"start": '2018-05-09T16:00:00',
 			color: "rgb(239, 200, 43)",
 			textColor: "rgb(0, 0, 0)",
@@ -26,10 +30,50 @@ function myEvents () {
 		{
 			"id": 3,
 			"title": 'Instalação Honda',
+			"descricao": "Inicio de instalação de friba na fábrica da honda.",
 			"start": '2018-05-14T08:00:00',
-			"start": '2018-05-14T12:00:00',
+			"end": '2018-05-14T12:00:00',
 			color: "rgb(34, 73, 137)",
 			// textColor: "rgb(0, 0, 0)"
+			equipe: [
+				"Fulano 1",
+				"Fulano 2"
+			]
+		},
+		{
+			"id": 4,
+			"title": 'Retirada de Equipamentos Locomotiva',
+			"descricao": "O Cliente entrou com o pedido de cancelamento no dia 05/05/2018, fazer a retirada do equipamento.",
+			"start": '2018-05-14T15:00:00',
+			color: "rgb(34, 73, 137)",
+			// textColor: "rgb(0, 0, 0)"
+			equipe: [
+				"Fulano 3"
+			]
+		},
+		{
+			"id": 5,
+			"title": 'Concerto de Rompimento de Fibra',
+			"descricao": "Identificado Rompimento de fibra na Rua Torquato tapajós, próximo a KIA, fazer o reparo.",
+			"start": '2018-05-16T09:00:00',
+			color: "rgb(34, 73, 137)",
+			// textColor: "rgb(0, 0, 0)"
+			equipe: [
+				"Fulano 1",
+				"Fulano 2",
+				"Fulano 3"
+			]
+		},
+		{
+			"id": 6,
+			"title": 'Verificação do Disel do Gerador',
+			"descricao": "Fazer a verificação de rotina do disel do gerador.",
+			"start": '2018-05-18T10:00:00',
+			color: "rgb(34, 73, 137)",
+			// textColor: "rgb(0, 0, 0)"
+			equipe: [
+				"Fulano 1"
+			]
 		}
 	];
 	return events;
@@ -78,7 +122,7 @@ document.addEventListener("DOMContentLoaded", () => {
 }, false);
 
 function setTitle () {
-	document.getElementById('title').innerHTML = `<h2>${$('#calendar').fullCalendar('getView').title}</h2>`;
+	document.getElementById('title').innerHTML = `<h3>${$('#calendar').fullCalendar('getView').title}</h3>`;
 }
 
 function getEvent (id) {
